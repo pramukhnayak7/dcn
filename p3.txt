@@ -1,0 +1,30 @@
+def div(num1, num2):
+  n = len(num2)
+  result = num1[:n]
+  rem = ""
+  for i in range(len(num2)):
+    rem += "0" if result[i] == num2[i] else "1"
+
+  while n < len(num1):
+    if rem[0] == "0":
+      rem = rem[1:] + num1[n]
+      n += 1
+    result = rem
+    rem = ""
+    for i in range(len(num2)):
+      rem += "0" if result[i] == num2[i] else "1"
+  return rem[1:]
+
+# Main program
+gen = input("Enter Generator: ")
+data = input("Enter Data: ")
+
+code = data + "0" * (len(gen) - 1)
+code = data + div(code, gen)
+print("The transmitted Code Word is:", code)
+
+rec = input("Please enter the received Code Word: ")
+if int(div(rec, gen)) == 0:
+  print("The received code word contains no errors.")
+else:
+  print("The received code word contains errors.")
