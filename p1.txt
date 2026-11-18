@@ -1,0 +1,33 @@
+import socket
+
+s = socket.socket()
+s.bind(('localhost', 1234))
+s.listen(1)
+print("Waiting for sender...")
+
+conn, addr = s.accept()
+print("Connected to:", addr)
+
+while True:
+    frame = conn.recv(1024)
+    if not frame:
+        break
+    print("Frame received:", frame.decode())
+
+conn.close()
+s.close()
+
+#-------reciver-----
+import socket
+
+s = socket.socket()
+s.connect(('localhost', 1234))
+
+while True:
+    frame = input("Enter frame: ")
+    if frame.lower() == 'exit':
+        break
+    s.send(frame.encode())
+    print("Number of bytes sent:", len(frame.encode()))
+
+s.close()
