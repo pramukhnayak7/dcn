@@ -1,0 +1,41 @@
+#----------- udp_client--------
+
+import socket
+
+cli_port = 6000
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+# Set client timeout to 1 second
+client_socket.settimeout(1.0)
+
+while True:
+  msg = input("Enter message for the Server: (say goodbye to disconnect): ")
+  send_data = msg.encode()
+
+  client_socket.sendto(send_data, ("127.0.0.1", cli_port))
+
+  if msg == "goodbye":
+    client_socket.close()
+    break
+
+#-----udp_server.py----
+
+import socket
+
+ser_port = 6000
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server_socket.bind(("localhost", ser_port))
+
+print("Server Started.")
+while True:
+  print(f"Server Ready to receive data on port:{ser_port}...")
+  receive_data, client_address = server_socket.recvfrom(1024)
+  client_message = receive_data.decode().strip()
+
+  print(
+      f" Client [IP: {client_address[0]} Port: {client_address[1]}]:"
+      f" {client_message}"
+  )
+
+  if client_message == "goodbye":
+    server_socket.close()
+    break
