@@ -1,0 +1,61 @@
+#stufffing_reciver-------
+import socket
+
+s = socket.socket()
+s.bind(('localhost', 1234))
+s.listen(1)
+
+print("Waiting for sender...")
+conn, addr = s.accept()
+stuffed = conn.recv(1024).decode()
+
+print("Received stuffed data:", stuffed)
+
+# Bit Destuffing
+destuffed = ""
+count = 0
+i = 0
+
+while i < len(stuffed):
+    bit = stuffed[i]
+    destuffed += bit
+    if bit == '1':
+        count += 1
+        if count == 5:
+            i += 1
+            count = 0
+    else:
+        count = 0
+    i += 1
+
+print("Data after destuffing:", destuffed)
+conn.close()
+s.close()
+
+
+#stuffing_sender-----
+
+import socket
+
+s = socket.socket()
+s.connect(('localhost', 1234))
+
+data = input("Enter the data bits: ")
+
+# Bit Stuffing
+stuffed = ""
+count = 0
+
+for bit in data:
+    stuffed += bit
+    if bit == '1':
+        count += 1
+        if count == 5:
+            stuffed += '0'
+            count = 0
+    else:
+        count = 0
+
+print("Stuffed data:", stuffed)
+s.send(stuffed.encode())
+s.close()
