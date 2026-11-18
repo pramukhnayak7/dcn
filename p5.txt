@@ -1,0 +1,39 @@
+import random
+
+# Initialize Leaky Bucket parameters
+bucket_size = 50
+output_rate = 5
+storage = 0
+
+# Get number of packets from user
+no_of_pkts = int(input("Enter number of packets to receive: "))
+
+print(f"\nBucket size: {bucket_size} bytes, output rate: {output_rate} bytes\n")
+
+for i in range(1, no_of_pkts + 1):
+    size_left = bucket_size - storage
+    input_pkt_size = random.randint(1, 30)  # Random packet size between 1 and 30
+
+    print(f"Packet received = {input_pkt_size} bytes")
+    # Check if packet fits in the bucket
+    if input_pkt_size <= size_left:
+        storage += input_pkt_size
+    else:
+        print(f"Packet {i} with size {input_pkt_size} bytes is dropped")
+
+    print(f"Bucket filled = {storage} bytes out of bucket size = {bucket_size} bytes")
+    # Transfer packets at a fixed output rate
+    bytes_transferred = min(storage, output_rate)
+    storage -= bytes_transferred
+    print(f"{bytes_transferred} bytes are transferred")
+    print(f"Remaining in bucket = {storage} bytes\n")
+
+# Empty any remaining data left in the bucket
+while storage > 0:
+    print(f"Bucket filled = {storage} bytes out of bucket size = {bucket_size} bytes")
+    bytes_transferred = min(storage, output_rate)
+    storage -= bytes_transferred
+    print(f"{bytes_transferred} bytes are transferred")
+    print(f"Remaining in bucket = {storage} bytes\n")
+
+print(f"Bucket filled = {storage} bytes out of bucket size = {bucket_size} bytes")
